@@ -7,6 +7,8 @@ v0.3 / 20.05.2024 Added MFT Chalange Disk, updated Velone
 v0.4 / 21.05.2024 Updated Saitek Autopilot Panel
 v0.5 / 24.05.2024 Updated Contour Pro
 v0.6 / 02.06.2024 Added CHflight
+v0.7 / 07.06.2024 Added Command line options
+v1.0 / 08.06.2024 Production ready
 
 Sample application using USBSimDevice to configure different non-standard USB devices for
 use with MSFS 2020 interacting through pysimconnect.
@@ -16,6 +18,7 @@ from USBSimDevice import USBSimDevice, METH, IO
 from simconnect import SimConnect, PERIOD_VISUAL_FRAME
 from time import sleep, time
 import argparse
+import sys
 
 ####################################
 ##### Hardware Definition here #####
@@ -33,13 +36,14 @@ parser.add_argument('-CHflight', dest='CHflight', action='store_true', help='Use
 
 Activate = vars(parser.parse_args())
 
-# Default values if no option is set
-if not any(Activate.values()):  
-    Activate["Contour"] = True
-    Activate["Velone"] = True
-    Activate["SaitekAP"] = True
-
-print(Activate)
+# If no arguments are provided, eihter show help when run from pyinstaller, or use default values.
+if not any(Activate.values()):
+    if getattr(sys, 'frozen', False):
+        parse_args(['-h'])
+    else:
+        Activate["Contour"] = True
+        Activate["Velone"] = True
+        Activate["SaitekAP"] = True
 
 # Hardwaredefinition Contour
 
